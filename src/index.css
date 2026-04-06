@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * 动态视口高度：移动浏览器地址栏显隐时 100vh 不变、100dvh 跟随可见区域（iOS/Android 常用）
+ * 不支持 dvh 的浏览器回退 100vh，由 var(--app-viewport-height, 100vh) 使用处兜底。
+ */
+:root {
+  --app-viewport-height: 100vh;
+}
+@supports (height: 100dvh) {
+  :root {
+    --app-viewport-height: 100dvh;
+  }
+}
+
+/* Hide browser scrollbar */
+html, body {
+  overflow: hidden;
+  height: 100%;
+  /* 与动态视口配合，减少刘海屏与 PWA 下高度异常 */
+  min-height: 100%;
+  min-height: -webkit-fill-available;
+  background-color: #f3f4f6; /* 确保有默认背景色，防止黑屏 */
+  margin: 0;
+  padding: 0;
+}
+
+/* Hide scrollbar for webkit browsers */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Force hide all scrollbars but allow interaction */
+*:not(button):not(a):not(input):not(textarea):not(select) {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*:not(button):not(a):not(input):not(textarea):not(select)::-webkit-scrollbar {
+  display: none;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Calendar container positioning */
+.w-full.max-w-sm {
+  position: relative;
+}
+
+/* Smooth horizontal scrolling for card swipe */
+.snap-x {
+  scroll-snap-type: x mandatory;
+}
+
+.snap-center {
+  scroll-snap-align: center;
+}
+
+.snap-mandatory {
+  scroll-snap-type: x mandatory;
+}
+
+/* Smooth scroll behavior */
+.overflow-x-auto {
+  scroll-behavior: smooth;
+}
+
+/* iOS smooth touch scrolling for nested scroll containers */
+.ios-touch-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+/**
+ * 全站顶栏统一规范（与 AppHeader 实测 --app-header-height 一致）
+ * - app-header-shell-fullscreen：独立全屏页（Drawer 等），含 safe-area 上内边距，需 viewport-fit=cover
+ * - app-header-shell-inset：嵌在主顶栏下方的面板内（DragPanel），不重复加 safe-area
+ * - app-header-toolbar：单行工具区（返回 / 标题 / 操作），统一 min-height
+ */
+@layer components {
+  .app-header-shell-fullscreen {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 0.5rem);
+    padding-bottom: 0.5rem;
+  }
+  .app-header-shell-inset {
+    @apply px-4 pt-2 pb-2;
+  }
+  .app-header-toolbar {
+    @apply flex w-full min-w-0 items-center justify-between min-h-[40px];
+  }
+}

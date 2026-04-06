@@ -1,0 +1,27 @@
+{
+  "info": {
+    "name": "Admin Schedules Batch",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Batch Create Schedules",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+        ],
+        "url": { "raw": "http://localhost:3001/api/admin/schedules/batch", "host": ["http://localhost:3001"], "path": ["api","admin","schedules","batch"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"entries\": [\n    {\"type\":\"meal\",\"schedule_name\":\"2026年3月第2周\",\"start_time\":\"{{yesterday}}T00:00:00Z\"},\n    {\"type\":\"supplement\",\"schedule_name\":\"基础维生素疗程\",\"course_id\":\"{{supplement_course_id}}\",\"total_days\":30,\"start_time\":\"{{yesterday}}T00:00:00Z\"}\n  ]\n}"
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    { "key": "yesterday", "value": "2026-03-07" }
+  ]
+}

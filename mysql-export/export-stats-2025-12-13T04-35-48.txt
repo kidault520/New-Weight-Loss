@@ -1,0 +1,26 @@
+导出统计信息
+==================================================
+
+user_profiles: 92 条记录
+health_records: 1000 条记录
+emotion_records: 3 条记录
+meal_plans: 4 条记录
+exercise_records: 30 条记录
+admin_roles: 4 条记录
+admin_users: 2 条记录
+admin_audit_logs: 1000 条记录
+supplement_plans: 4 条记录
+products: 2 条记录
+orders: 5 条记录
+delivery_addresses: 31 条记录
+health_assessments: 148 条记录
+user_packages: 4 条记录
+user_preferences: 5 条记录
+chat_messages: 559 条记录
+custom_reports: 4 条记录
+food_library: 7 条记录
+exercise_library: 7 条记录
+food_categories: 14 条记录
+exercise_categories: 11 条记录
+
+总计: 2936 条记录

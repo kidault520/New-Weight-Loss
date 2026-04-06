@@ -1,0 +1,18 @@
+:root{
+  --z-base: 0;
+  --z-highlight: 10;
+  --z-sticky: 20;
+  --z-top-nav: 40;
+  --z-bottom-nav: 50;
+  --z-fullscreen-page: 50; /* 全屏页面（会隐藏底部导航） */
+  --z-menu-content: 60;
+  --z-menu-mask: 55;
+  --z-modal-content: 70;
+  --z-modal-mask: 65;
+  --z-blocking: 80;
+  --z-fullscreen-flow: 90;
+  --z-toast: 100;
+  --z-guide: 9999;
+  --z-dev-tools: 99999;
+}
+

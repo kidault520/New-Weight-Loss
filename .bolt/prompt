@@ -1,0 +1,15 @@
+For all designs I ask you to make, have them be beautiful, not cookie cutter. Make webpages that are fully featured and worthy for production.
+
+By default, this template supports JSX syntax with Tailwind CSS classes, React hooks, and Lucide React for icons. Do not install other packages for UI themes, icons, etc unless absolutely necessary or I request them.
+
+Use icons from lucide-react for logos.
+
+严格保持已确定的设计：今后不会私自修改或删除已经确定的版式、设计风格和功能代码
+提前同步变更：任何可能影响现有功能的修改都会提前与您讨论
+仔细检查现有功能：在添加新功能时，会确保不破坏现有的功能和设计
+保持代码一致性：严格遵循已建立的代码规范和组件结构，页面内容限制在 app 的默认主窗口内（最大宽度 448px），不会占据整个网页窗口的宽度；
+
+优先视觉参考：今后在处理任何 UI 相关的任务时，我将把您提供的截图、设计稿或详细视觉描述作为最高优先级。如果缺少这些信息，我将主动向您请求。
+主动确认细节：对于任何可能存在歧义的 UI 元素，我会在实施前主动与您确认其精确的视觉样式、交互行为和文本内容。
+强化上下文理解：我将努力更好地理解您项目的整体设计风格和偏好，以便在没有明确指示时也能做出更符合您期望的决策。
+更细致的自查：在完成 UI 相关的修改后，我会进行更细致的自查，确保新实现与您期望的视觉效果完全一致。
