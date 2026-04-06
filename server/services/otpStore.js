@@ -87,6 +87,17 @@ async function ensureRedisClient() {
 }
 
 async function ensureOtpStoreReady() {
+  // Vercel Serverless：无长期进程，默认不强制 Redis（内存 OTP 在单实例/冷启动场景可接受；多实例请配 REDIS_URL + OTP_STORE_PROVIDER=redis）
+  if (process.env.VERCEL === '1') {
+    if (OTP_STORE_PROVIDER === 'redis') {
+      const client = await ensureRedisClient();
+      if (!client) {
+        throw new Error('OTP Redis is required but unavailable');
+      }
+    }
+    return;
+  }
+
   if (IS_PRODUCTION && OTP_STORE_PROVIDER !== 'redis') {
     throw new Error(
       `Production requires OTP_STORE_PROVIDER=redis (current: ${OTP_STORE_PROVIDER || 'empty'})`

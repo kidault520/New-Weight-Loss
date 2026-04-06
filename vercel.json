@@ -1,10 +1,11 @@
 {
+  "installCommand": "npm install --include=dev",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
   "functions": {
     "api/**/*.js": {
-      "includeFiles": "lib/**"
+      "includeFiles": "server/**"
     }
   },
   "rewrites": [

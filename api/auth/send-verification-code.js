@@ -1,3 +1,1 @@
-const { proxyApiRequest } = require('../../lib/vercelProxyForward.cjs');
-
-module.exports = async (req, res) => proxyApiRequest(req, res, 'auth/send-verification-code');
+module.exports = require('../_vercelExpress.cjs');

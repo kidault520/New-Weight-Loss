@@ -510,10 +510,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         if (!res.ok) {
-          const msg =
+          let msg =
             payload.error ||
             payload.message ||
             (res.status === 401 ? '验证码错误或已过期，请重新获取' : `登录失败 (${res.status})`);
+          if (res.status === 404) {
+            const generic404 =
+              !payload.error ||
+              payload.error === 'Not found' ||
+              payload.code === 'API_NOT_FOUND';
+            if (generic404) {
+              msg =
+                '登录接口返回 404。请确认：① Vercel Root Directory 指向含 api/、server/、vercel.json 的目录并已重新部署；② 若 API 走外链 Node，需配置 API_PROXY_ORIGIN；若 API 已随本站 Serverless 部署，请检查构建是否包含 server 目录。可打开 /api/deploy-check 自检。';
+            }
+          }
           const code = typeof payload.code === 'string' ? payload.code : `HTTP_${res.status}`;
           return { error: makeAuthFlowError(msg, code, res.status) };
         }

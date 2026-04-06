@@ -60,15 +60,38 @@ function getProductionCorsOrigins() {
 
 // Middleware
 app.use(helmet());
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production'
-    ? getProductionCorsOrigins()
-    : [
-        'http://localhost:5173', 'http://localhost:3000', 'http://localhost:5174', 'http://localhost:5175',
-        'http://127.0.0.1:5173', 'http://127.0.0.1:3000', 'http://127.0.0.1:5174', 'http://127.0.0.1:5175',
-      ],
-  credentials: true
-}));
+const devCorsOrigins = [
+  'http://localhost:5173', 'http://localhost:3000', 'http://localhost:5174', 'http://localhost:5175',
+  'http://127.0.0.1:5173', 'http://127.0.0.1:3000', 'http://127.0.0.1:5174', 'http://127.0.0.1:5175',
+];
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === 'production'
+        ? (origin, cb) => {
+            if (!origin) {
+              cb(null, true);
+              return;
+            }
+            const allow = getProductionCorsOrigins();
+            if (allow.includes(origin)) {
+              cb(null, true);
+              return;
+            }
+            // Vercel 预览/生产子域：前端与 /api 常同源，但部分客户端仍会带 Origin
+            if (
+              process.env.VERCEL === '1' &&
+              (origin.endsWith('.vercel.app') || origin === 'https://vercel.app')
+            ) {
+              cb(null, true);
+              return;
+            }
+            cb(null, false);
+          }
+        : devCorsOrigins,
+    credentials: true,
+  }),
+);
 
 // Use winston logger for HTTP requests
 app.use(morgan('combined', {
@@ -126,6 +149,20 @@ app.get('/api/status', (req, res) => {
   });
 });
 
+/** 部署自检（Vercel 与独立 Node 均可用；同源部署时无需 API_PROXY_ORIGIN） */
+app.get('/api/deploy-check', (req, res) => {
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.json({
+    ok: true,
+    vercel: process.env.VERCEL === '1',
+    nodeEnv: process.env.NODE_ENV || '',
+    hint:
+      process.env.VERCEL === '1'
+        ? 'API 由 Vercel Serverless 运行，与前端同源；请在此项目环境变量中配置 Supabase 与 Node 所需密钥（无需 API_PROXY_ORIGIN）。'
+        : '独立 Node 进程；若前端异域部署请配置 CORS_ORIGINS。',
+  });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   logger.error('Unhandled error:', err);
@@ -150,8 +187,10 @@ async function startServer() {
       logger.info(
         `[runtime] mode=${runtimePolicy.mode} strict=${runtimePolicy.strict} allowSimulatedPayment=${runtimePolicy.allowSimulatedPayment} allowSimulatedDelivery=${runtimePolicy.allowSimulatedDelivery} allowSimulatedSms=${runtimePolicy.allowSimulatedSms}`,
       );
-      startDeliveryReconcileScheduler();
-      startMealScheduleActivationScheduler();
+      if (process.env.VERCEL !== '1') {
+        startDeliveryReconcileScheduler();
+        startMealScheduleActivationScheduler();
+      }
     });
   } catch (e) {
     logger.error(`Failed to start server: ${e?.message || e}`);
@@ -159,4 +198,8 @@ async function startServer() {
   }
 }
 
-startServer();
+module.exports = app;
+
+if (require.main === module && process.env.VERCEL !== '1') {
+  startServer();
+}

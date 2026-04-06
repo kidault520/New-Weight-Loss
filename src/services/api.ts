@@ -8,8 +8,23 @@ import type { ChatAiClientContext } from '../utils/chatAiContext';
 const TODAY_SUPPLEMENTS_INGESTED_KEY = 'today-supplements-ingested';
 
 // 开发环境优先走 /api 代理，避免跨域/设备访问 localhost 导致请求落空
+function resolveApiBaseUrl(): string {
+  const raw = import.meta.env.VITE_API_URL;
+  if (raw == null || String(raw).trim() === '') {
+    return '/api';
+  }
+  let u = String(raw).trim().replace(/\/+$/, '');
+  // 绝对 URL 且未带 /api 时，与后端 app.use('/api/...') 对齐（避免请求打到 /auth/... → 404）
+  if (u.startsWith('http://') || u.startsWith('https://')) {
+    if (!u.endsWith('/api')) {
+      return `${u}/api`;
+    }
+  }
+  return u.startsWith('/') ? u : `/${u}`;
+}
+
 /** 未配置时用同源 /api，避免生产包误连 localhost */
-export const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+export const API_BASE_URL = resolveApiBaseUrl();
 
 // 错误类型枚举
 export enum ApiErrorType {
